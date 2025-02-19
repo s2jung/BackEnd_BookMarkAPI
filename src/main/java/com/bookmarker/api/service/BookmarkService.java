@@ -53,6 +53,16 @@ public class BookmarkService {
 //        return repository.findAll(pageable) 의 return type 이 Page<T> 가 돼서 오류메시지가 뜸. -> getContent
 
 //        return repository.findAll();
+
+
     }
-    
+
+    @Transactional(readOnly = true)
+    public BookmarksDTO searchBookmarks(String query, Integer page) {
+        int pageNo = page < 1 ? 0 : page - 1;
+        Pageable pageable = PageRequest.of(pageNo, 10, Sort.Direction.DESC, "createdAt");
+//        Page<BookmarkDTO> bookmarkPage = repository.searchBookmarks(query, pageable);
+        Page<BookmarkDTO> bookmarkPage = repository.findByTitleContainsIgnoreCase(query, pageable);
+        return new BookmarksDTO(bookmarkPage);
+    }
 }
